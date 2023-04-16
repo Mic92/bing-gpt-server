@@ -27,7 +27,7 @@ in {
       description = "Bing GPT Server";
       wantedBy = [ "multi-user.target" ];
       environment = {
-        COOKIE_FILE = "%d/bing-gpt-cookie-file";
+        COOKIE_PATH = "%d/bing-gpt-cookie-file";
         PORT = "${toString cfg.port}";
         PYTHONPATH = "${pkgs.python3.pkgs.makePythonPath [ bing-gpt-server ]}";
       };
