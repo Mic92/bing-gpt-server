@@ -1,6 +1,9 @@
 from EdgeGPT import Chatbot, ConversationStyle
-from quart import Quart, request, render_template
+from quart import Quart, request, render_template, Response
 import os
+import json
+from pathlib import Path
+
 
 app = Quart(__name__)
 
@@ -30,11 +33,31 @@ async def index():
     return await render_template("index.html")
 
 
+def load_cookies(cookie_path: Path) -> list[dict[str, str]]:
+    try:
+        data = json.loads(Path(cookie_path).read_text())
+    except FileNotFoundError as e:
+        raise RuntimeError("Cookie file not found") from e
+
+    new_format = []
+    if isinstance(data, dict):
+        if "Request Cookies" in data:
+            data = data["Request Cookies"]
+        new_format = []
+        for k,v in data.items():
+            new_format.append(dict(name=k, value=v))
+    else:
+        new_format = data
+    return new_format
+
+
 def main():
     cookie_path = os.environ.get("COOKIE_PATH")
     if cookie_path is None:
         raise RuntimeError("COOKIES_PATH environment variable not set")
-    app.config["bot"] = Chatbot(cookies={}, cookiePath=cookie_path)
+    cookies = load_cookies(Path(cookie_path))
+
+    app.config["bot"] = Chatbot(cookies=cookies) # type: ignore
     app.run()
 
 if __name__ == "__main__":

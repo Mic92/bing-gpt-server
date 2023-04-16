@@ -18,7 +18,11 @@ setup(
     ],
     packages=["bing_gpt_server"],
     package_data={
-        'bing_gpt_server': ['templates/*.html']
+        'bing_gpt_server': [
+            'templates/*.html',
+            'static/*.css',
+            'static/*.js',
+        ]
      },
     classifiers=[],
 )
