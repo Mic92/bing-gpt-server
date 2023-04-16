@@ -10,14 +10,46 @@
 
     <!-- CSS -->
     <style>
-      section {  margin-top: 2rem; }
+      section {
+        margin-top: 2rem;
+      }
     </style>
-
 
     <!-- JS -->
     <script>
-      onload = () => {
+      function renderResponse(data) {
+        console.log(data);
+        const response = document.getElementById("response");
+        response.innerHTML = "";
 
+        // render response
+        let header = document.createElement("h3");
+        header.textContent = "Response";
+        response.appendChild(header);
+        let ul = document.createElement("ul");
+        response.appendChild(ul);
+
+        for (
+          let i = 0;
+          i < data.item.messages[1].sourceAttributions.length;
+          i++
+        ) {
+          const a = document.createElement("a");
+          a.href = data.item.messages[1].sourceAttributions[i].seeMoreUrl;
+          a.target = "_blank";
+          a.textContent =
+            data.item.messages[1].sourceAttributions[i].providerDisplayName;
+
+          const li = document.createElement("li");
+          li.appendChild(a);
+          ul.appendChild(li);
+        }
+
+        let p = document.createElement("p");
+        p.textContent = data.item.messages[1].text;
+        response.appendChild(p);
+      }
+      onload = () => {
         const chatForm = document.getElementById("chat-form");
         chatForm.addEventListener("submit", (e) => {
           e.preventDefault();
@@ -27,32 +59,8 @@
           // encode
           const url = `/api/chat?prompt=${prompt}&conversation_style=${conversation_style}`;
           fetch(url)
-            .then((res) => {
-              return res.json();
-            })
-            .then((data) => {
-              console.log(data);
-              const response = document.getElementById("response");
-              // render response
-              let sourceAttributions = "";
-              for (let i = 0; i < data.item.messages[1].sourceAttributions.length; i++) {
-                sourceAttributions += `
-                  <li>
-                    <a href="${data.item.messages[1].sourceAttributions[i].seeMoreUrl}" target="_blank">
-                      ${data.item.messages[1].sourceAttributions[i].providerDisplayName}
-                    </a>
-                  </li>
-                `;
-              }
-
-              response.innerHTML = `
-                <h3>Response</h3>
-                <ul>
-                  ${sourceAttributions}
-                </ul>
-                <p>${data.item.messages[1].text}</p>
-              `;
-            });
+            .then((res) => { return res.json(); })
+            .then(renderResponse);
         });
       };
     </script>
@@ -330,6 +338,6 @@
         </div>
       </section>
     </div>
-    <script src="/static/bootstrap-5.3.0-alpha3.bundle.min.js" ></script>
+    <script src="/static/bootstrap-5.3.0-alpha3.bundle.min.js"></script>
   </body>
 </html>
