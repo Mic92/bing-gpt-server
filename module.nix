@@ -33,7 +33,7 @@ in {
       };
       serviceConfig = {
         LoadCredential = "bing-gpt-cookie-file:${cfg.cookieFile}";
-        ExecStart = "${pkgs.python3Packages.hypercorn}/bin/hypercorn --listen ${cfg.address}:${toString cfg.port} --bind ${cfg.address} bing_gpt_server.main:app";
+        ExecStart = "${pkgs.python3Packages.hypercorn}/bin/hypercorn --bind ${cfg.address}:${toString cfg.port} bing_gpt_server.main:app";
         Restart = "always";
         User = "bing-gpt-server";
         Group = "bing-gpt-server";
