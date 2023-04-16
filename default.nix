@@ -9,6 +9,13 @@ pythonPkgs.buildPythonPackage {
     pythonPkgs.quart
     (pythonPkgs.callPackage ./edge-gpt { })
   ];
+
+  doCheck = false; # fixme httpx tries to resolve host
+
+  postBuild = ''
+    export COOKIE_PATH=cookies.json
+    echo "[]" > cookies.json
+  '';
   meta = {
     description = "A simple HTTP server for the Edge-GPT";
     homepage = "https://github.com/Mic92/bing-gpt-server";
