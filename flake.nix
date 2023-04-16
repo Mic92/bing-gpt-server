@@ -13,5 +13,6 @@
       perSystem = { pkgs, ... }: {
         packages.default = pkgs.callPackage ./default.nix { };
       };
+      nixosModules.bing-gpt-server = import ./module.nix;
     });
 }
