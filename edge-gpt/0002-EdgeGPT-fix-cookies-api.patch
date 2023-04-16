@@ -1,0 +1,35 @@
+From d4917842766fb78651b7ebd7a6aea25b773e32f8 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
+Date: Sun, 16 Apr 2023 18:10:24 +0200
+Subject: [PATCH 2/2] EdgeGPT: fix cookies api
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
+---
+ src/EdgeGPT.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/EdgeGPT.py b/src/EdgeGPT.py
+index c8ecc74..0c9ba96 100644
+--- a/src/EdgeGPT.py
++++ b/src/EdgeGPT.py
+@@ -335,12 +335,12 @@ class Chatbot:
+     """
+ 
+     def __init__(
+-        self, cookies: dict, proxy: str | None = None, cookiePath: str = None
++        self, cookies: dict = {}, proxy: str | None = None, cookiePath: str = None
+     ) -> None:
+         if cookiePath is not None:
+             try:
+                 with open(cookiePath, "r", encoding="utf-8") as f:
+-                    cookies = json.load(f)
++                    self.cookies = json.load(f)
+             except FileNotFoundError as e:
+                 raise FileNotFoundError("Cookie file not found") from e
+         else:
+-- 
+2.39.2
+

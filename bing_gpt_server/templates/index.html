@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+      crossorigin="anonymous"
+    />
+
+    <!-- CSS -->
+    <style>
+      section {
+        margin-top: 2rem;
+      }
+    </style>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- JS -->
+    <script>
+      onload = () => {
+
+        const chatForm = document.getElementById("chat-form");
+        chatForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const prompt = document.getElementById("prompt").value;
+          const conversation_style =
+            document.getElementById("conversation_style").value;
+          // encode
+          const url = `/api/chat?prompt=${prompt}&conversation_style=${conversation_style}`;
+          fetch(url)
+            .then((res) => {
+              return res.json();
+            })
+            .then((data) => {
+              console.log(data);
+              const response = document.getElementById("response");
+              // render response
+              let sourceAttributions = "";
+              for (let i = 0; i < data.item.messages[1].sourceAttributions.length; i++) {
+                sourceAttributions += `
+                  <li>
+                    <a href="${data.item.messages[1].sourceAttributions[i].seeMoreUrl}" target="_blank">
+                      ${data.item.messages[1].sourceAttributions[i].providerDisplayName}
+                    </a>
+                  </li>
+                `;
+              }
+
+              response.innerHTML = `
+                <h3>Response</h3>
+                <ul>
+                  ${sourceAttributions}
+                </ul>
+                <p>${data.item.messages[1].text}</p>
+              `;
+            });
+        });
+      };
+    </script>
+  </head>
+
+  <body>
+    <div class="container mt-5">
+      <h1>BingGPT</h1>
+
+      <section>
+        <h2>Chat</h2>
+        <form action="/api/chat" method="GET" id="chat-form">
+          <div class="mb-3">
+            <label for="prompt" class="form-label">Prompt</label>
+            <!-- multi line text box -->
+            <textarea
+              class="form-control"
+              id="prompt"
+              name="prompt"
+              rows="3"
+            ></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="conversation_style" class="form-label"
+              >Conversation style</label
+            >
+            <!--Dropdown menu, defaulting to balanced-->
+            <select
+              class="form-select"
+              aria-label="Default select example"
+              id="conversation_style"
+              name="conversation_style"
+            >
+              <option selected value="balanced">Balanced</option>
+              <option value="creative">Creative</option>
+              <option value="precise">Precise</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <div id="response"></div>
+      </section>
+
+      <section>
+        <h2>API Endpoints</h2>
+        <a href="/api/chat">/api/chat</a>
+        <p>Chat with the bot</p>
+        <p>Method: GET</p>
+        <p>Params:</p>
+        <ul>
+          <li>prompt: Prompt, required</li>
+          <li>
+            conversation_style: Conversation style, optional, default: creative,
+            supported values: creative, balanced, precise
+          </li>
+        </ul>
+
+        <button
+          class="btn btn-primary"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseResponse"
+          aria-expanded="false"
+          aria-controls="collapseResponse"
+        >
+          Show response
+        </button>
+
+        <div class="collapse" id="collapseResponse">
+          <div class="card card-body">
+            <code>
+              <pre>
+                {
+                    "invocationId": "0",
+                    "item": {
+                        "conversationExpiryTime": "2023-04-16T22:43:59.8948129Z",
+                        "conversationId": "51D|BingProd|36083BAB8D429213DD8A216BB61C8ED9DD889188C980553C6CD3FFF0EB59CF70",
+                        "firstNewMessageIndex": 1,
+                        "messages": [
+                            {
+                                "author": "user",
+                                "contentOrigin": "cib",
+                                "createdAt": "2023-04-16T16:43:29.2061658+00:00",
+                                "feedback": {
+                                    "tag": null,
+                                    "type": "None",
+                                    "updatedOn": null
+                                },
+                                "from": {
+                                    "id": "1055519387251971",
+                                    "name": null
+                                },
+                                "inputMethod": "Keyboard",
+                                "locale": "en-us",
+                                "market": "en-us",
+                                "messageId": "caccd5d6-37f7-4700-a441-02a6a9d3929c",
+                                "nlu": {
+                                    "classificationRanking": [
+                                        {
+                                            "classification": "DEEP_LEO",
+                                            "score": null
+                                        }
+                                    ],
+                                    "entities": null,
+                                    "metaData": null,
+                                    "ood": null,
+                                    "qualifyingClassifications": null,
+                                    "scoredClassification": {
+                                        "classification": "DEEP_LEO",
+                                        "score": null
+                                    }
+                                },
+                                "offense": "None",
+                                "privacy": null,
+                                "region": "us",
+                                "requestId": "caccd5d6-37f7-4700-a441-02a6a9d3929c",
+                                "text": "How much does the fish cost?",
+                                "timestamp": "2023-04-16T16:43:29.2006373+00:00"
+                            },
+                            {
+                                "adaptiveCards": [
+                                    {
+                                        "body": [
+                                            {
+                                                "text": "[1]: https://en.wikipedia.org/wiki/Fisher-Price \"Fisher-Price - Wikipedia\"\n[2]: https://www.selinawamucii.com/insights/prices/united-states-of-america/fish/ \"Fish price in US - April 2023 prices (Updated Daily) - Selina Wamucii\"\n[3]: https://fred.stlouisfed.org/series/PSALMUSDA \"Global price of Fish (PSALMUSDA) | FRED | St. Louis Fed\"\n[4]: https://fishmanmkt.com/pages/market-prices \"Fisherman's Market Seafood Outlet Product List\"\n[5]: https://nypost.com/2021/07/28/restaurants-stop-selling-seafood-hike-prices-amid-inflation/ \"Restaurants stop selling seafood, hike prices amid inflation\"\n[6]: https://www.fao.org/in-action/globefish/fishery-information/resource-detail/en/c/338740/ \"Fish Is Food - The FAO’s Fish Price Index | GLOBEFISH | Food and ...\"\n[7]: https://www.thespruceeats.com/places-to-buy-fresh-seafood-online-1666076 \"9 Best Seafood Delivery Services of 2023 - The Spruce Eats\"\n[8]: https://www.bluecart.com/blog/market-price-seafood \"Bulk Fish: What Is the Market Price of Seafood Items? - BlueCart\"\n[9]: https://www.costco.com/seafood.html \"Seafood | Costco\"\n\nHello, this is Bing. The price of fish depends on many factors, such as the type of fish, the source, the season, and the demand. According to some sources[^1^][5] [^2^][8], the wholesale cost of fish and seafood is up 18.8 percent from June of last year, and the menu price is up 4.5 percent over that same period. Some examples of fish prices are[^2^][8]:\n\n- One pound of head-on prawns: $22.40\n- One pound of Maine diver scallops: $60\n- One pound of Canadian salmon fillet: $11.49\n- One pound of fresh monkfish fillet: $7.99\n\nWhat kind of fish are you looking for? 🐟\n",
+                                                "type": "TextBlock",
+                                                "wrap": true
+                                            },
+                                            {
+                                                "size": "small",
+                                                "text": "Learn more: [1. nypost.com](https://nypost.com/2021/07/28/restaurants-stop-selling-seafood-hike-prices-amid-inflation/) [2. www.bluecart.com](https://www.bluecart.com/blog/market-price-seafood) [3. en.wikipedia.org](https://en.wikipedia.org/wiki/Fisher-Price) [4. www.selinawamucii.com](https://www.selinawamucii.com/insights/prices/united-states-of-america/fish/) [5. fred.stlouisfed.org](https://fred.stlouisfed.org/series/PSALMUSDA) [6. fishmanmkt.com](https://fishmanmkt.com/pages/market-prices) [7. www.fao.org](https://www.fao.org/in-action/globefish/fishery-information/resource-detail/en/c/338740/) [8. www.thespruceeats.com](https://www.thespruceeats.com/places-to-buy-fresh-seafood-online-1666076) [9. www.costco.com](https://www.costco.com/seafood.html)",
+                                                "type": "TextBlock",
+                                                "wrap": true
+                                            }
+                                        ],
+                                        "type": "AdaptiveCard",
+                                        "version": "1.0"
+                                    }
+                                ],
+                                "author": "bot",
+                                "contentOrigin": "DeepLeo",
+                                "createdAt": "2023-04-16T16:43:43.6905895+00:00",
+                                "feedback": {
+                                    "tag": null,
+                                    "type": "None",
+                                    "updatedOn": null
+                                },
+                                "messageId": "cc346c31-6b01-4690-a67f-eae28f371941",
+                                "offense": "None",
+                                "privacy": null,
+                                "requestId": "caccd5d6-37f7-4700-a441-02a6a9d3929c",
+                                "sourceAttributions": [
+                                    {
+                                        "providerDisplayName": "Restaurants stop selling seafood, hike prices amid inflation",
+                                        "searchQuery": "fish price seafood",
+                                        "seeMoreUrl": "https://nypost.com/2021/07/28/restaurants-stop-selling-seafood-hike-prices-amid-inflation/"
+                                    },
+                                    {
+                                        "providerDisplayName": "Bulk Fish: What Is the Market Price of Seafood Items? - BlueCart",
+                                        "searchQuery": "fish price seafood",
+                                        "seeMoreUrl": "https://www.bluecart.com/blog/market-price-seafood"
+                                    },
+                                    {
+                                        "providerDisplayName": "Fisher-Price - Wikipedia",
+                                        "searchQuery": "fish price",
+                                        "seeMoreUrl": "https://en.wikipedia.org/wiki/Fisher-Price"
+                                    },
+                                    {
+                                        "providerDisplayName": "Fish price in US - April 2023 prices (Updated Daily) - Selina Wamucii",
+                                        "searchQuery": "fish price",
+                                        "seeMoreUrl": "https://www.selinawamucii.com/insights/prices/united-states-of-america/fish/"
+                                    },
+                                    {
+                                        "providerDisplayName": "Global price of Fish (PSALMUSDA) | FRED | St. Louis Fed",
+                                        "searchQuery": "fish price",
+                                        "seeMoreUrl": "https://fred.stlouisfed.org/series/PSALMUSDA"
+                                    },
+                                    {
+                                        "providerDisplayName": "Fisherman's Market Seafood Outlet Product List",
+                                        "searchQuery": "fish price",
+                                        "seeMoreUrl": "https://fishmanmkt.com/pages/market-prices"
+                                    },
+                                    {
+                                        "providerDisplayName": "Fish Is Food - The FAO’s Fish Price Index | GLOBEFISH | Food and ...",
+                                        "searchQuery": "fish price seafood",
+                                        "seeMoreUrl": "https://www.fao.org/in-action/globefish/fishery-information/resource-detail/en/c/338740/"
+                                    },
+                                    {
+                                        "providerDisplayName": "9 Best Seafood Delivery Services of 2023 - The Spruce Eats",
+                                        "searchQuery": "fish price seafood",
+                                        "seeMoreUrl": "https://www.thespruceeats.com/places-to-buy-fresh-seafood-online-1666076"
+                                    },
+                                    {
+                                        "providerDisplayName": "Seafood | Costco",
+                                        "searchQuery": "fish price seafood",
+                                        "seeMoreUrl": "https://www.costco.com/seafood.html"
+                                    }
+                                ],
+                                "suggestedResponses": [
+                                    {
+                                        "author": "user",
+                                        "contentOrigin": "DeepLeo",
+                                        "createdAt": "2023-04-16T16:43:59.8233696+00:00",
+                                        "feedback": {
+                                            "tag": null,
+                                            "type": "None",
+                                            "updatedOn": null
+                                        },
+                                        "messageId": "61c9aaf7-00fc-44eb-9c14-719cbca3c91d",
+                                        "messageType": "Suggestion",
+                                        "offense": "Unknown",
+                                        "privacy": null,
+                                        "text": "I'm looking for tuna.",
+                                        "timestamp": "2023-04-16T16:43:59.8233696+00:00"
+                                    },
+                                    {
+                                        "author": "user",
+                                        "contentOrigin": "DeepLeo",
+                                        "createdAt": "2023-04-16T16:43:59.8233708+00:00",
+                                        "feedback": {
+                                            "tag": null,
+                                            "type": "None",
+                                            "updatedOn": null
+                                        },
+                                        "messageId": "bf3fa4cf-5254-4dca-85f7-2902e5b01bb9",
+                                        "messageType": "Suggestion",
+                                        "offense": "Unknown",
+                                        "privacy": null,
+                                        "text": "I'm looking for lobster.",
+                                        "timestamp": "2023-04-16T16:43:59.8233708+00:00"
+                                    },
+                                    {
+                                        "author": "user",
+                                        "contentOrigin": "DeepLeo",
+                                        "createdAt": "2023-04-16T16:43:59.8233725+00:00",
+                                        "feedback": {
+                                            "tag": null,
+                                            "type": "None",
+                                            "updatedOn": null
+                                        },
+                                        "messageId": "ce943e7c-db8e-46f8-8947-79d84a4d69ad",
+                                        "messageType": "Suggestion",
+                                        "offense": "Unknown",
+                                        "privacy": null,
+                                        "text": "I'm looking for smoked salmon.",
+                                        "timestamp": "2023-04-16T16:43:59.8233725+00:00"
+                                    }
+                                ],
+                                "text": "Hello, this is Bing. The price of fish depends on many factors, such as the type of fish, the source, the season, and the demand. According to some sources[^5^] [^8^], the wholesale cost of fish and seafood is up 18.8 percent from June of last year, and the menu price is up 4.5 percent over that same period. Some examples of fish prices are[^8^]:\n\n- One pound of head-on prawns: $22.40\n- One pound of Maine diver scallops: $60\n- One pound of Canadian salmon fillet: $11.49\n- One pound of fresh monkfish fillet: $7.99\n\nWhat kind of fish are you looking for? 🐟",
+                                "timestamp": "2023-04-16T16:43:43.6905895+00:00"
+                            }
+                        ],
+                        "requestId": "caccd5d6-37f7-4700-a441-02a6a9d3929c",
+                        "result": {
+                            "message": "fish price",
+                            "serviceVersion": "20230414.94",
+                            "value": "Success"
+                        },
+                        "shouldInitiateConversation": true,
+                        "telemetry": {
+                            "metrics": null,
+                            "startTime": "2023-04-16T16:43:29.2007578Z"
+                        },
+                        "throttling": {
+                            "maxNumUserMessagesInConversation": 20,
+                            "numUserMessagesInConversation": 1
+                        }
+                    },
+                    "type": 2
+                }
+            </pre
+              >
+            </code>
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>
