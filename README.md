@@ -14,3 +14,7 @@ pip install -e .
 ```
 COOKIE_PATH=/tmp/cookies.json python -m bing_gpt_server
 ```
+
+# Demo
+
+[Screenshot](./screenshot.jpg)
