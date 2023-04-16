@@ -51,14 +51,15 @@ def load_cookies(cookie_path: Path) -> list[dict[str, str]]:
     return new_format
 
 
-def main():
+def setup():
     cookie_path = os.environ.get("COOKIE_PATH")
     if cookie_path is None:
         raise RuntimeError("COOKIES_PATH environment variable not set")
     cookies = load_cookies(Path(cookie_path))
 
     app.config["bot"] = Chatbot(cookies=cookies) # type: ignore
-    app.run()
+
+setup()
 
 if __name__ == "__main__":
-    main()
+    app.run()

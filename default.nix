@@ -2,10 +2,10 @@
 let
   pythonPkgs = pkgs.python3.pkgs;
 in
-pythonPkgs.buildPythonApplication {
+pythonPkgs.buildPythonPackage {
   name = "bing-gpt-server";
   src =  ./.;
-  propagatedBuildInputs = with pkgs; [
+  propagatedBuildInputs = [
     pythonPkgs.quart
     (pythonPkgs.callPackage ./edge-gpt { })
   ];

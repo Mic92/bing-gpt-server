@@ -10,16 +10,30 @@ in {
         type = lib.types.path;
         description = "Path to the cookie file.";
       };
+      address = lib.mkOption {
+        type = lib.types.str;
+        default = "localhost";
+        description = "Address to listen on.";
+      };
+      port = lib.mkOption {
+        type = lib.types.port;
+        default = 8000;
+        description = "Port to listen on.";
+      };
     };
   };
   config = lib.mkIf config.services.bing-gpt-server.enable {
     systemd.services.bing-gpt-server = {
       description = "Bing GPT Server";
       wantedBy = [ "multi-user.target" ];
+      environment = {
+        COOKIE_FILE = "%d/bing-gpt-cookie-file";
+        PORT = "${toString cfg.port}";
+        PYTHONPATH = "${pkgs.python3.pkgs.makePythonPath [ bing-gpt-server ]}";
+      };
       serviceConfig = {
-        Environment = "COOKIE_FILE=%d/bing-gpt-cookie-file";
         LoadCredential = "bing-gpt-cookie-file:${cfg.cookieFile}";
-        ExecStart = "${bing-gpt-server}/bin/bing-gpt-server";
+        ExecStart = "${pkgs.python3Packages.hypercorn}/bin/hypercorn --listen ${cfg.address}:${toString cfg.port} --bind ${cfg.address} bing_gpt_server.main:app";
         Restart = "always";
         User = "bing-gpt-server";
         Group = "bing-gpt-server";
