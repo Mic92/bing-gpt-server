@@ -19,7 +19,8 @@ async def chat():
     except KeyError:
         return "Invalid conversation style, should be one of: " + ", ".join(ConversationStyle.__members__.keys()), 400
 
-    bot = app.config["bot"]
+    cookies = app.config["bot_cookies"]
+    bot = Chatbot(cookies=cookies)
     print("prompt: " + prompt, "style: " + conversation_style)
     resp = await bot.ask(prompt=prompt, conversation_style=style, wss_link="wss://sydney.bing.com/sydney/ChatHub")
     await bot.close()
@@ -55,9 +56,7 @@ def setup():
     cookie_path = os.environ.get("COOKIE_PATH")
     if cookie_path is None:
         raise RuntimeError("COOKIE_PATH environment variable not set")
-    cookies = load_cookies(Path(cookie_path))
-
-    app.config["bot"] = Chatbot(cookies=cookies) # type: ignore
+    app.config["bot_cookies"] = load_cookies(Path(cookie_path))
 
 setup()
 
