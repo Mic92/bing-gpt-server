@@ -5,20 +5,15 @@
 
 python3.pkgs.buildPythonPackage rec {
   pname = "edge-gpt";
-  version = "0.1.25";
+  version = "0.1.26";
   format = "setuptools";
 
   src = fetchFromGitHub {
     owner = "acheong08";
     repo = "EdgeGPT";
     rev = version;
-    hash = "sha256-t1R9RAGowYceXS725Tjwzw2Y7ZQkT5ZqYdOltKA/i2k=";
+    hash = "sha256-HG/UCJg+YGokeO8wbhGtS6Xtpurfn2f8OJIUIVeF6vo=";
   };
-
-  patches = [
-    ./0001-Refactor-314.patch
-    ./0002-EdgeGPT-fix-cookies-api.patch
-  ];
 
   propagatedBuildInputs = with python3.pkgs; [
     requests
