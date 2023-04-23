@@ -36,7 +36,7 @@ in {
         ExecStart = "${pkgs.python3Packages.hypercorn}/bin/hypercorn --bind ${cfg.address}:${toString cfg.port} bing_gpt_server:app";
 
         StateDirectory = "bing-gpt-server";
-        WorkingDirectory = "bing-gpt-server";
+        WorkingDirectory = "/var/lib/bing-gpt-server";
 
         Restart = "always";
         User = "bing-gpt-server";
