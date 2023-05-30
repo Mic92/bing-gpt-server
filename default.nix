@@ -1,13 +1,17 @@
 { pkgs ? import <nixpkgs> {} }:
 let
   pythonPkgs = pkgs.python3.pkgs;
+  bing-image-creator = pythonPkgs.callPackage ./bing-image-creator { };
+  edge-gpt = pythonPkgs.callPackage ./edge-gpt {
+    inherit bing-image-creator;
+  };
 in
 pythonPkgs.buildPythonPackage {
   name = "bing-gpt-server";
   src =  ./.;
   propagatedBuildInputs = [
     pythonPkgs.quart
-    (pythonPkgs.callPackage ./edge-gpt { })
+    edge-gpt
   ];
 
   doCheck = false; # fixme httpx tries to resolve host
