@@ -7,7 +7,7 @@ from uuid import uuid4
 from quart import Quart, render_template, request, send_from_directory, url_for
 
 from BingImageCreator import ImageGenAsync
-from EdgeGPT import Chatbot, ConversationStyle
+from EdgeGPT.EdgeGPT import Chatbot, ConversationStyle
 
 app = Quart(__name__)
 
