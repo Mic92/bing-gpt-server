@@ -30,6 +30,8 @@ in {
         COOKIE_PATH = "%d/bing-gpt-cookie-file";
         PORT = "${toString cfg.port}";
         PYTHONPATH = "${pkgs.python3.pkgs.makePythonPath [ bing-gpt-server ]}";
+        # https://github.com/acheong08/BingImageCreator/issues/39
+        BING_URL = "https://cn.bing.com";
       };
       serviceConfig = {
         LoadCredential = "bing-gpt-cookie-file:${cfg.cookieFile}";
